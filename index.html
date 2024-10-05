@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Punisher-style Shooter</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; background-color: #000; }
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="score">Score: 0</div>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let player = {
+      x: 50,
+      y: canvas.height / 2 - 25,
+      width: 50,
+      height: 50,
+      color: 'blue',
+      speed: 5
+    };
+
+    let bullets = [];
+    let enemies = [];
+    let obstacles = [];
+    let score = 0;
+
+    // Управление игроком
+    let keys = {};
+    window.addEventListener('keydown', function (e) {
+      keys[e.key] = true;
+    });
+    window.addEventListener('keyup', function (e) {
+      keys[e.key] = false;
+    });
+
+    // Функция стрельбы
+    function shoot() {
+      bullets.push({
+        x: player.x + player.width,
+        y: player.y + player.height / 2 - 5,
+        width: 10,
+        height: 5,
+        speed: 10
+      });
+    }
+
+    // Создание врагов
+    function spawnEnemy() {
+      enemies.push({
+        x: canvas.width,
+        y: Math.random() * (canvas.height - 50),
+        width: 50,
+        height: 50,
+        color: 'red',
+        speed: 2
+      });
+    }
+
+    // Создание объектов (например, бочек для разрушения)
+    function spawnObstacle() {
+      obstacles.push({
+        x: canvas.width,
+        y: Math.random() * (canvas.height - 50),
+        width: 50,
+        height: 50,
+        color: 'gray',
+        speed: 2,
+        health: 3 // У объектов есть жизнь, они разрушаются
+      });
+    }
+
+    // Обновление состояния игры
+    function update() {
+      // Движение игрока
+      if (keys['ArrowUp'] && player.y > 0) player.y -= player.speed;
+      if (keys['ArrowDown'] && player.y < canvas.height - player.height) player.y += player.speed;
+
+      // Стрельба
+      if (keys[' ']) shoot();
+
+      // Обновление пуль
+      bullets.forEach((bullet, index) => {
+        bullet.x += bullet.speed;
+        if (bullet.x > canvas.width) bullets.splice(index, 1); // Удаляем пули за пределами экрана
+      });
+
+      // Обновление врагов
+      enemies.forEach((enemy, index) => {
+        enemy.x -= enemy.speed;
+        if (enemy.x + enemy.width < 0) enemies.splice(index, 1); // Удаление врагов за экраном
+      });
+
+      // Обновление объектов
+      obstacles.forEach((obstacle, index) => {
+        obstacle.x -= obstacle.speed;
+        if (obstacle.x + obstacle.width < 0) obstacles.splice(index, 1); // Удаление объектов за экраном
+      });
+
+      // Проверка столкновений пуль с врагами
+      bullets.forEach((bullet, bulletIndex) => {
+        enemies.forEach((enemy, enemyIndex) => {
+          if (
+            bullet.x < enemy.x + enemy.width &&
+            bullet.x + bullet.width > enemy.x &&
+            bullet.y < enemy.y + enemy.height &&
+            bullet.y + bullet.height > enemy.y
+          ) {
+            // Убиваем врага
+            enemies.splice(enemyIndex, 1);
+            bullets.splice(bulletIndex, 1);
+            score += 100;
+          }
+        });
+
+        obstacles.forEach((obstacle, obstacleIndex) => {
+          if (
+            bullet.x < obstacle.x + obstacle.width &&
+            bullet.x + bullet.width > obstacle.x &&
+            bullet.y < obstacle.y + obstacle.height &&
+            bullet.y + bullet.height > obstacle.y
+          ) {
+            obstacle.health -= 1;
+            bullets.splice(bulletIndex, 1);
+            if (obstacle.health <= 0) obstacles.splice(obstacleIndex, 1); // Разрушаем объект
+            score += 50;
+          }
+        });
+      });
+
+      // Периодический спавн врагов и объектов
+      if (Math.random() < 0.02) spawnEnemy();
+      if (Math.random() < 0.01) spawnObstacle();
+    }
+
+    // Отрисовка
+    function draw() {
+      // Очистка экрана
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Отрисовка игрока
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+
+      // Отрисовка пуль
+      bullets.forEach(bullet => {
+        ctx.fillStyle = 'yellow';
+        ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+      });
+
+      // Отрисовка врагов
+      enemies.forEach(enemy => {
+        ctx.fillStyle = enemy.color;
+        ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+      });
+
+      // Отрисовка объектов
+      obstacles.forEach(obstacle => {
+        ctx.fillStyle = obstacle.color;
+        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+      });
+
+      // Отображение счета
+      document.getElementById('score').textContent = `Score: ${score}`;
+    }
+
+    // Главный цикл игры
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Запуск игры
+    gameLoop();
+  </script>
+</body>
+</html>
