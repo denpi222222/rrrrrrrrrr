@@ -24,18 +24,18 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Загрузка изображений
+    // Встраиваем изображения в формате Base64
     const playerImg = new Image();
-    playerImg.src = 'https://i.imgur.com/h8dyczZ.png'; // Замени на нужное изображение игрока
+    playerImg.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABjUlEQVRoQ+2WvU7DQBBH30xApAByoAcqAHKgByoAfoTEAEsIBEDABCI9LDzNGQU2InPO+mDNscgqbuPbc1PJk8kCk/u2FvcrfcknT7UQC2wBP+tybvvw9QCgAkCqAVUBWQIohvo7/qa3U9UK4GZQOfsSB2uBZPCt4joAfRVUmrwDRBFgiRVgbCjXNmKqQPiNrL8RvwPOoKtP4AJUBdlFwFlAYdbyIup7Ueb3O5BeAA3gCpRmocowH02LK9mgMNrkVLUwSZIDBM03dZaOjktEGEIu5IBlbG2gzNGEonZmZnZM+u7xjxWbK7ZdrhASBIBbyvMiAL8DTANwBcB0wjrFZ1vFS9rIuIEYjTx2gO0SOuqo8szEyfUaswCRyZnNU0CKKSlwpHVgmnkDDukSIC54LbyYmFwOj0VJdPToRsdSeDo0MS6ImX9BWAwUDzUVmOtF1NoGdgfALhrybjyGfyTZvd08u57e2WXdyqPldW5rxsfEc5vvcIBlAVVc7DdC+AEgz47hr9Gs8AAAAASUVORK5CYII='; // Изображение игрока
 
     const enemyImg = new Image();
-    enemyImg.src = 'https://i.imgur.com/2r9rYdD.png'; // Замени на изображение врага
+    enemyImg.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABNklEQVRoQ+2WsU7DMBBFx5ZgBwgXoBcgF6AXIHcgu+CNgJSggDo4KA4OAuACDAa3XBvDlEl7ESuBHBkzPzXvmGN9OL2dnbbxC4JAp+oqAUoAxQU7AEgKALIVIGmhTYCbCfJngbdGbAUkppBNgCkSIcW5TSPJUKSB7JVBgttLPqj+1cbAH2BbYLSUeQXTzpyeXxOCM10AXHA8PU4km9v1Lo6TlnR13TXtbDSahTwGQwoFWjzp7rxzBGUW40V1mL5tElJmACDZXfGbDKqFBySaS11U3mGABWkUwmOSX/3fCz2V5UnEgsR95Lt41zH0RQSAEnMAkm0h2BuCNEp5Ycxm1QHgKIJlszwPhtzmz8J/G53Ul/qzbrngAAAABJRU5ErkJggg=='; // Изображение врага
 
     const bulletImg = new Image();
-    bulletImg.src = 'https://i.imgur.com/5bxsAyn.png'; // Замени на изображение пули
+    bulletImg.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAAB9kA0VAAAAPElEQVR42mNgGAWDEzMDAwsUkqTqfpPwn1hBaBmLmDnExME4gwWAEYQsglSAaKjEV+DA0DOyAhiAoMglEAAAEDWyx8iKlDAAAAAElFTkSuQmCC'; // Пуля
 
     const backgroundImg = new Image();
-    backgroundImg.src = 'https://i.imgur.com/GgD3JvN.jpg'; // Фон игры
+    backgroundImg.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD/4QCARXhpZgAATU0AKgAAAAgAAkAAAAMAAAABAAEAAAMAAAABAAEAAAAAAAD/2wBDAAoHBwkHBgoJCAkLCwoMDxkQDw4RDw4WFxIZJCEmJSMfHh8oKCEiJSoqMysxNTU0HCQ7QDs0Py40NTEBDAwMEA8QHhISHjQsJCA0NDY0NDY0/2wBDAQsLCw0NDRkQDRQ1GBY0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDY0/3QAEAAP/2Q=='; // Фон
 
     let player = {
       x: 50,
